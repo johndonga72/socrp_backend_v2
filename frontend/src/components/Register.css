@@ -1,0 +1,84 @@
+/* Register.css */
+
+.register-container {
+    width: 450px;
+    margin: 50px auto;
+    padding: 30px 40px;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #0073b1;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.register-form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.register-form-group input[type="text"],
+.register-form-group input[type="email"],
+.register-form-group input[type="password"],
+.register-form-group input[type="file"] {
+    width: 100%;
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.register-form-group input:focus {
+    border-color: #0073b1;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 115, 177, 0.3);
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox input {
+    margin-right: 10px;
+}
+
+.register-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #0073b1;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register-button:hover {
+    background-color: #005f8d;
+}
+
+.success-message {
+    margin-top: 15px;
+    color: green;
+    font-weight: 600;
+    text-align: center;
+}
+
+@media (max-width: 500px) {
+    .register-container {
+        width: 90%;
+        padding: 20px;
+    }
+}
