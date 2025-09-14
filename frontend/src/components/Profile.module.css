@@ -1,0 +1,120 @@
+/* ProfileForm.css */
+
+.profile-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-container h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #222;
+}
+
+/* Success message */
+.success-msg {
+    background: #e8f9f0;
+    color: #146c43;
+    border: 1px solid #bcdccb;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form grid layout */
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+/* Inputs, selects, textarea */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s;
+    background-color: #fafafa;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #007bff;
+    background-color: #fff;
+}
+
+/* Textarea */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+    grid-column: span 2;
+    /* make wide */
+}
+
+/* Section headers */
+h3 {
+    grid-column: span 2;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #007bff;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+/* Add buttons inside sections */
+button[type="button"] {
+    grid-column: span 2;
+    padding: 10px 15px;
+    background: #f1f5ff;
+    color: #007bff;
+    border: 1px dashed #007bff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s, color 0.3s;
+}
+
+button[type="button"]:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+/* Submit button */
+button[type="submit"] {
+    grid-column: span 2;
+    padding: 14px;
+    background: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #0056b3;
+}

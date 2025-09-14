@@ -8,7 +8,7 @@ function VerifyEmail() {
 
     useEffect(() => {
         const uid = params.uid;
-        axios.get("http://127.0.0.1:8000/api/verify/${uid}/")
+        axios.get(`http://127.0.0.1:8000/api/verify/${uid}/`)
             .then(res => setMsg(res.data.msg))
             .catch(err => setMsg(err.response.data.error));
     }, [params.uid]);

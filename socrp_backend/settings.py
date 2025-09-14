@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'users',
+    'rest_framework_simplejwt',
 ]
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -112,12 +114,19 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ]
 }
+# JWT configuration
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -151,5 +160,10 @@ CORS_ALLOWED_ORIGINS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Prints email to console for testing
-DEFAULT_FROM_EMAIL = 'johndonga72@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_USER')         # Your Gmail address
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')        # See note below
+DEFAULT_FROM_EMAIL = config('EMAIL_USER')

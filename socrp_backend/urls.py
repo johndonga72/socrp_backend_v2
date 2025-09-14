@@ -18,10 +18,17 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from users.views import UserProfileViewSet
+
+router = DefaultRouter()
+router.register(r'profile', UserProfileViewSet, basename='profile')
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
+    path('api1/', include(router.urls)),
 ]
 
 if settings.DEBUG:

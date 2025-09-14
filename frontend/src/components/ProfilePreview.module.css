@@ -1,0 +1,69 @@
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    background-color: #E3F2FD;
+    min-height: 80vh;
+}
+
+.card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 700px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.photoContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.profilePhoto {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1565C0;
+}
+
+.editPhotoText {
+    font-size: 12px;
+    color: #1565C0;
+    margin-top: 5px;
+}
+
+.infoSection p {
+    margin: 5px 0;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+.subSection {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.downloadBtn {
+    background-color: #0D47A1;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.editBtn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: #1565C0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

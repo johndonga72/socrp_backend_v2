@@ -9,13 +9,19 @@ from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, permissions
+from .models import UserProfile
+from .serializers import UserProfileSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class RegisterUser(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()  # This calls create_user() -> encrypts password & generates membership ID
-
+            user.is_active = False
+            user.save()
             # Send verification email
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             verification_link = f"http://localhost:8000/api/verify/{uid}/"
@@ -42,3 +48,31 @@ class VerifyEmail(APIView):
             return Response({'msg': 'Email verified successfully. You can now login.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': 'Invalid verification link'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Users can only see their own profile
+        return UserProfile.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Link the profile with the logged-in user
+        if not UserProfile.objects.filter(user=self.request.user).exists():
+            serializer.save(user=self.request.user)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['email'] = user.email
+        token['full_name'] = user.full_name
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

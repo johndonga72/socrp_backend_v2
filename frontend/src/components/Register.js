@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./Register.css";
+import { useNavigate } from "react-router-dom";
+import "./Register.module.css";
 
 function Register() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
@@ -56,7 +58,9 @@ function Register() {
             const response = await axios.post("http://127.0.0.1:8000/api/register/", data, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            setSuccessMsg(response.data.msg);
+            alert("Registration successful! Please check your email to verify your account.");
+
+            navigate("/login");
         } catch (error) {
             if (error.response) {
                 // Server responded with a status (400, 404, 500, etc.)
