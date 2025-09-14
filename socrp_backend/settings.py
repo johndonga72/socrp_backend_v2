@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g_-ldkgq8+8e3h7vxr6qidgamb+5$30d(p2%^#*sx-8i#s0#7b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =True
+DEBUG =False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["socrp-backend-v2.onrender.com", "localhost",]
 
 
 # Application definition
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'socrp_backend.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL")
+        default=os.environ.get('DATABASE_URL')
     )
 }
 
