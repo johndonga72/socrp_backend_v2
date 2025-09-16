@@ -1,0 +1,219 @@
+/* Layout */
+.adminContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafc;
+}
+
+.adminHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e3a8a;
+    color: white;
+    padding: 15px 30px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.profileBtn {
+    background: #2563eb;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.adminBody {
+    display: flex;
+    flex: 1;
+}
+
+.adminSidebar {
+    width: 220px;
+    background: #111827;
+    color: white;
+    padding: 20px 0;
+}
+
+.adminSidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.adminSidebar li {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.adminSidebar li:hover,
+.active {
+    background: #2563eb;
+}
+
+.adminMain {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Cards */
+.cardContainer {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.blue {
+    background: #2563eb;
+}
+
+.green {
+    background: #16a34a;
+}
+
+.red {
+    background: #dc2626;
+}
+
+.yellow {
+    background: #e7f707;
+}
+
+/* Table */
+.userTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.userTable th,
+.userTable td {
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.userTable th {
+    background: #f3f4f6;
+    font-weight: 600;
+}
+
+.userTable button {
+    margin: 0 5px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.userTable button:nth-child(1) {
+    background: #2563eb;
+}
+
+.userTable button:nth-child(2) {
+    background: #f59e0b;
+}
+
+.userTable button:nth-child(3) {
+    background: #dc2626;
+}
+
+/* Profile & Edit Sections */
+.profileSection,
+.editSection {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profileSection button,
+.editSection button {
+    margin: 10px 5px 0 0;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.profileSection button:nth-child(4) {
+    background: #2563eb;
+}
+
+.profileSection button:nth-child(5) {
+    background: #f59e0b;
+}
+
+.profileSection button:nth-child(6) {
+    background: #6b7280;
+}
+
+.editSection form {
+    display: flex;
+    flex-direction: column;
+}
+
+.editSection label {
+    margin: 10px 0 5px;
+}
+
+.editSection input {
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.editSection button[type="submit"] {
+    background: #16a34a;
+}
+
+.editSection button[type="button"] {
+    background: #6b7280;
+}
+
+/* Footer */
+.adminFooter {
+    background: #1e3a8a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .adminBody {
+        flex-direction: column;
+    }
+
+    .adminSidebar {
+        width: 100%;
+        text-align: center;
+    }
+
+    .cardContainer {
+        flex-direction: column;
+    }
+}

@@ -1,69 +1,168 @@
+/* ProfilePreview.module.css */
+
+/* Container and Card */
 .container {
     display: flex;
     justify-content: center;
-    padding: 40px;
-    background-color: #E3F2FD;
-    min-height: 80vh;
+    padding: 30px 15px;
+    background-color: #f2f2f7;
+    min-height: 100vh;
 }
 
 .card {
-    background-color: white;
+    width: 100%;
+    max-width: 1000px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     padding: 30px;
-    border-radius: 10px;
-    width: 700px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile Photo */
 .photoContainer {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
+    justify-content: center;
     margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
 }
 
 .profilePhoto {
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
+    border: 3px solid #007bff;
     object-fit: cover;
-    border: 3px solid #1565C0;
+    transition: transform 0.3s ease;
+}
+
+.photoContainer:hover .profilePhoto {
+    transform: scale(1.05);
 }
 
 .editPhotoText {
+    position: absolute;
+    bottom: -18px;
     font-size: 12px;
-    color: #1565C0;
-    margin-top: 5px;
+    color: #007bff;
+    font-weight: 500;
+}
+
+/* Basic Info Section */
+.infoSection {
+    margin-bottom: 30px;
+    padding-left: 15px;
+}
+
+.infoSection h2 {
+    font-size: 26px;
+    color: #222;
+    margin-bottom: 8px;
 }
 
 .infoSection p {
-    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+    margin: 3px 0;
 }
 
+/* Sections (Education, Experience, Skills) */
 .section {
-    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.section h3 {
+    font-size: 18px;
+    color: #007bff;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .subSection {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.downloadBtn {
-    background-color: #0D47A1;
-    color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
+.subSection p {
+    font-size: 13px;
+    color: #333;
+    margin: 3px 0;
 }
 
-.editBtn {
-    margin-top: 20px;
-    width: 100%;
-    padding: 10px;
-    background-color: #1565C0;
-    color: white;
+/* Buttons */
+.downloadBtn,
+.editBtn,
+.shareBtn {
+    background-color: #007bff;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    padding: 10px 18px;
+    margin: 5px 5px 0 0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.downloadBtn:hover,
+.editBtn:hover,
+.shareBtn:hover {
+    background-color: #0056b3;
+    opacity: 0.9;
+}
+
+/* Share Link */
+.shareLink {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    word-break: break-word;
+}
+
+.shareLink a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.shareLink a:hover {
+    text-decoration: none;
+}
+
+/* Select Dropdown */
+select {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card {
+        padding: 20px;
+    }
+
+    .profilePhoto {
+        width: 120px;
+        height: 120px;
+    }
+
+    .infoSection h2 {
+        font-size: 22px;
+    }
+
+    .section h3 {
+        font-size: 16px;
+    }
 }

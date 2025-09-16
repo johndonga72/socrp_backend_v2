@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import CustomUser,UserProfile,Education,WorkExperience
-
+from django.contrib.auth import get_user_model
 class UserRegisterSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
@@ -16,27 +16,33 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data.pop('confirm_password')  # remove confirm_password before creating user
         user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            full_name=validated_data['full_name'],
-            password=validated_data['password'],
-            phone=validated_data.get('phone', ''),
-            profile_photo=validated_data.get('profile_photo', None),
-            resume=validated_data.get('resume', None),
+        email=validated_data['email'],
+        full_name=validated_data['full_name'],
+        password=validated_data['password'],
+        phone=validated_data.get('phone', ''),
+        profile_photo=validated_data.get('profile_photo', None),
+        resume=validated_data.get('resume', None),
         )
         return user
-# UserProfile serializer
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["id", "email", "full_name"]  # include more fields if needed
+
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
-        fields = ["id", "degree", "university", "year_of_completion", "marks_cgpa"]
-# WorkExperience serializer
+        fields = "__all__"
+
 class WorkExperienceSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkExperience
-        fields = ["id", "company_name", "designation", "start_date", "end_date", "responsibilities"]
-# UserProfile serializer with nested education and experience
+        fields = "__all__"
+
 class UserProfileSerializer(serializers.ModelSerializer):
     # Nested serializers
+    user = UserSerializer(read_only=True)  # ✅ show full user object instead of just ID
     educations = EducationSerializer(many=True, required=False)
     experiences = WorkExperienceSerializer(many=True, required=False)
 
@@ -44,7 +50,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = [
             "id",
-            "user",   # maps to CustomUser (FK)
+            "user",   # ✅ now will return full user data
             "dob",
             "gender",
             "contact",
@@ -104,3 +110,84 @@ class UserProfileSerializer(serializers.ModelSerializer):
             )
 
         return instance
+    
+class AdminEducationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Education
+        fields = ["id", "degree", "university", "year_of_completion", "marks_cgpa"]
+        read_only_fields = []  # admin can edit
+
+class AdminWorkExperienceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkExperience
+        fields = ["id", "company_name", "designation", "start_date", "end_date", "responsibilities"]
+        read_only_fields = []  # admin can edit
+
+class AdminUserProfileSerializer(serializers.ModelSerializer):
+    membership_id = serializers.CharField(source="user.membership_id", read_only=True)
+    educations = AdminEducationSerializer(many=True, required=False)
+    experiences = AdminWorkExperienceSerializer(many=True, required=False)
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "id","membership_id", "dob", "gender", "contact", "address",
+            "profile_photo", "resume", "skills", "languages",
+            "educations", "experiences"
+        ]
+        read_only_fields = []
+
+    def update(self, instance, validated_data):
+        # Update profile fields
+        for field in ["dob", "gender", "contact", "address", "profile_photo", "resume", "skills", "languages"]:
+            setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+        instance.save()
+
+        # Update nested educations
+        for edu in validated_data.get("educations", []):
+            Education.objects.update_or_create(
+                user_profile=instance,
+                degree=edu.get("degree"),
+                defaults=edu
+            )
+
+        # Update nested experiences
+        for exp in validated_data.get("experiences", []):
+            WorkExperience.objects.update_or_create(
+                user_profile=instance,
+                company_name=exp.get("company_name"),
+                designation=exp.get("designation"),
+                defaults=exp
+            )
+
+        return instance
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    profile = AdminUserProfileSerializer(required=False, allow_null=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ["id", "full_name", "email", "phone", "is_blocked", "profile"]  # replace 'status' with 'is_blocked'
+
+    def update(self, instance, validated_data):
+        # Update user fields
+        for field in ["full_name", "email", "phone", "is_blocked"]:  # replaced 'status'
+            setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+        instance.save()
+
+        # Handle profile
+        profile_data = validated_data.get("profile")
+        if profile_data:
+            profile_instance = getattr(instance, "profile", None)
+            if profile_instance:
+                serializer = AdminUserProfileSerializer(profile_instance, data=profile_data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+            else:
+                UserProfile.objects.create(user=instance, **profile_data)
+
+        return instance
+class AdminUserStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ["is_active", "is_verified", "is_blocked"]

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./Profile.module.css";
 
 function ProfileForm() {
+    const navigate = useNavigate();
     const [profile, setProfile] = useState({
         id: null,
         dob: "",
@@ -13,8 +15,8 @@ function ProfileForm() {
         languages: "",
         profile_photo: null,
         resume: null,
-        educations: [{ degree: "", university: "", year_of_completion: "", marks_cgpa: "" }],
-        experiences: [{ company_name: "", designation: "", start_date: "", end_date: "", responsibilities: "" }]
+        educations: [],
+        experiences: []
     });
 
     const [message, setMessage] = useState("");
@@ -28,7 +30,15 @@ function ProfileForm() {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {
-                if (res.data.length > 0) setProfile(res.data[0]);
+                if (res.data && res.data.length > 0) {
+                    const profileData = res.data[0];
+
+                    // Ensure nested arrays exist
+                    profileData.educations = profileData.educations || [];
+                    profileData.experiences = profileData.experiences || [];
+
+                    setProfile(profileData);
+                }
             })
             .catch(err => console.error(err));
     }, []);
@@ -71,17 +81,16 @@ function ProfileForm() {
         });
 
         // Append files only if selected
-        if (profile.profile_photo) formData.append("profile_photo", profile.profile_photo);
-        if (profile.resume) formData.append("resume", profile.resume);
+        if (profile.profile_photo instanceof File) formData.append("profile_photo", profile.profile_photo);
+        if (profile.resume instanceof File) formData.append("resume", profile.resume);
 
-        // Append nested arrays
+        // Append nested arrays as JSON
         formData.append("educations", JSON.stringify(profile.educations));
         formData.append("experiences", JSON.stringify(profile.experiences));
 
         try {
             if (profile.id) {
-                // Update existing profile
-                await axios.put(
+                await axios.patch(
                     `http://127.0.0.1:8000/api1/profile/${profile.id}/`,
                     formData,
                     {
@@ -92,7 +101,6 @@ function ProfileForm() {
                     }
                 );
             } else {
-                // Create new profile if it does not exist
                 const res = await axios.post(
                     "http://127.0.0.1:8000/api1/profile/",
                     formData,
@@ -107,6 +115,7 @@ function ProfileForm() {
             }
 
             setMessage("Profile saved successfully!");
+            navigate("/profile/preview");
         } catch (err) {
             console.error(err);
             setMessage("Error saving profile");
@@ -118,13 +127,12 @@ function ProfileForm() {
             <h2>Edit Profile</h2>
             {message && <div className={styles.successMsg}>{message}</div>}
             <form onSubmit={handleSubmit}>
-
-                {/* Personal Info */}
+                {/* --- Personal Info --- */}
                 <label>DOB</label>
-                <input type="date" name="dob" value={profile.dob} onChange={handleChange} />
+                <input type="date" name="dob" value={profile.dob || ""} onChange={handleChange} />
 
                 <label>Gender</label>
-                <select name="gender" value={profile.gender} onChange={handleChange}>
+                <select name="gender" value={profile.gender || ""} onChange={handleChange}>
                     <option value="">Select</option>
                     <option value="M">Male</option>
                     <option value="F">Female</option>
@@ -132,44 +140,50 @@ function ProfileForm() {
                 </select>
 
                 <label>Contact</label>
-                <input type="text" name="contact" value={profile.contact} onChange={handleChange} />
+                <input type="text" name="contact" value={profile.contact || ""} onChange={handleChange} />
 
                 <label>Address</label>
-                <textarea name="address" value={profile.address} onChange={handleChange}></textarea>
+                <textarea name="address" value={profile.address || ""} onChange={handleChange}></textarea>
 
                 <label>Skills</label>
-                <input type="text" name="skills" value={profile.skills} onChange={handleChange} />
+                <input type="text" name="skills" value={profile.skills || ""} onChange={handleChange} />
 
                 <label>Languages</label>
-                <input type="text" name="languages" value={profile.languages} onChange={handleChange} />
+                <input type="text" name="languages" value={profile.languages || ""} onChange={handleChange} />
 
-                {/* File Uploads */}
+                {/* --- File Uploads --- */}
                 <label>Profile Photo</label>
                 <input type="file" name="profile_photo" onChange={handleFileChange} />
+                {profile.profile_photo && typeof profile.profile_photo === "string" && (
+                    <img src={profile.profile_photo} alt="Profile" className={styles.previewImage} />
+                )}
 
                 <label>Resume</label>
                 <input type="file" name="resume" onChange={handleFileChange} />
+                {profile.resume && typeof profile.resume === "string" && (
+                    <a href={profile.resume} target="_blank" rel="noreferrer">View Resume</a>
+                )}
 
-                {/* Education */}
+                {/* --- Education --- */}
                 <h3>Education</h3>
                 {profile.educations.map((edu, idx) => (
-                    <div key={idx}>
-                        <input type="text" placeholder="Degree" value={edu.degree} onChange={(e) => {
+                    <div key={idx} className={styles.subSection}>
+                        <input type="text" placeholder="Degree" value={edu.degree || ""} onChange={(e) => {
                             const newEdus = [...profile.educations];
                             newEdus[idx].degree = e.target.value;
                             setProfile({ ...profile, educations: newEdus });
                         }} />
-                        <input type="text" placeholder="University" value={edu.university} onChange={(e) => {
+                        <input type="text" placeholder="University" value={edu.university || ""} onChange={(e) => {
                             const newEdus = [...profile.educations];
                             newEdus[idx].university = e.target.value;
                             setProfile({ ...profile, educations: newEdus });
                         }} />
-                        <input type="number" placeholder="Year" value={edu.year_of_completion} onChange={(e) => {
+                        <input type="number" placeholder="Year" value={edu.year_of_completion || ""} onChange={(e) => {
                             const newEdus = [...profile.educations];
                             newEdus[idx].year_of_completion = e.target.value;
                             setProfile({ ...profile, educations: newEdus });
                         }} />
-                        <input type="text" placeholder="Marks/CGPA" value={edu.marks_cgpa} onChange={(e) => {
+                        <input type="text" placeholder="Marks/CGPA" value={edu.marks_cgpa || ""} onChange={(e) => {
                             const newEdus = [...profile.educations];
                             newEdus[idx].marks_cgpa = e.target.value;
                             setProfile({ ...profile, educations: newEdus });
@@ -178,31 +192,31 @@ function ProfileForm() {
                 ))}
                 <button type="button" onClick={addEducation}>➕ Add Education</button>
 
-                {/* Work Experience */}
+                {/* --- Work Experience --- */}
                 <h3>Work Experience</h3>
                 {profile.experiences.map((exp, idx) => (
-                    <div key={idx}>
-                        <input type="text" placeholder="Company" value={exp.company_name} onChange={(e) => {
+                    <div key={idx} className={styles.subSection}>
+                        <input type="text" placeholder="Company" value={exp.company_name || ""} onChange={(e) => {
                             const newExps = [...profile.experiences];
                             newExps[idx].company_name = e.target.value;
                             setProfile({ ...profile, experiences: newExps });
                         }} />
-                        <input type="text" placeholder="Designation" value={exp.designation} onChange={(e) => {
+                        <input type="text" placeholder="Designation" value={exp.designation || ""} onChange={(e) => {
                             const newExps = [...profile.experiences];
                             newExps[idx].designation = e.target.value;
                             setProfile({ ...profile, experiences: newExps });
                         }} />
-                        <input type="date" placeholder="Start Date" value={exp.start_date} onChange={(e) => {
+                        <input type="date" placeholder="Start Date" value={exp.start_date || ""} onChange={(e) => {
                             const newExps = [...profile.experiences];
                             newExps[idx].start_date = e.target.value;
                             setProfile({ ...profile, experiences: newExps });
                         }} />
-                        <input type="date" placeholder="End Date" value={exp.end_date} onChange={(e) => {
+                        <input type="date" placeholder="End Date" value={exp.end_date || ""} onChange={(e) => {
                             const newExps = [...profile.experiences];
                             newExps[idx].end_date = e.target.value;
                             setProfile({ ...profile, experiences: newExps });
                         }} />
-                        <textarea placeholder="Responsibilities" value={exp.responsibilities} onChange={(e) => {
+                        <textarea placeholder="Responsibilities" value={exp.responsibilities || ""} onChange={(e) => {
                             const newExps = [...profile.experiences];
                             newExps[idx].responsibilities = e.target.value;
                             setProfile({ ...profile, experiences: newExps });

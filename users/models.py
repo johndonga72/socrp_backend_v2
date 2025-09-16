@@ -4,6 +4,9 @@ from django.db import models
 from datetime import datetime
 from django.conf import settings
 import random
+import uuid
+from datetime import timedelta
+from django.utils import timezone
 
 # 1️⃣ Create a user manager
 class CustomUserManager(BaseUserManager):
@@ -35,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -84,5 +88,27 @@ class WorkExperience(models.Model):
     def __str__(self):
         return f"{self.company_name} - {self.designation} ({self.start_date} to {self.end_date or 'Present'})"
 
+class ProfileShareLink(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="share_links")
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    expiry_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
-
+    def is_valid(self):
+        return timezone.now() < self.expiry_date
+    class Meta:
+        indexes = [
+            models.Index(fields=["token"]),
+            models.Index(fields=["expiry_date"]),
+        ]
+class ProfileViewLog(models.Model):
+    share_link = models.ForeignKey(ProfileShareLink, on_delete=models.CASCADE, related_name="logs")
+    viewer_ip = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        indexes = [
+            models.Index(fields=["share_link"]),
+            models.Index(fields=["viewed_at"]),
+        ]
+   
