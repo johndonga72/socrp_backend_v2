@@ -81,7 +81,7 @@ function Register() {
         if (resume) data.append("resume", resume);
 
         try {
-            await axios.post("${apiBase}/api/register/", data, {
+            await axios.post(`${apiBase}/api/register/`, data, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setSuccessMsg("Registration successful! Please check your email to verify your account.");

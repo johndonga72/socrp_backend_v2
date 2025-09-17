@@ -12,7 +12,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("${apiBase}/api/token/", {
+            const res = await axios.post(`${apiBase}/api/token/`, {
                 email,
                 password
             });

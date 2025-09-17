@@ -19,7 +19,7 @@ const ProfilePreview = () => {
             }
 
             try {
-                const res = await axios.get("${apiBase}/api1/profile/", {
+                const res = await axios.get(`${apiBase}/api1/profile/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (res.data.length > 0) setProfile(res.data[0]);
@@ -34,7 +34,7 @@ const ProfilePreview = () => {
     const generateLink = async () => {
         try {
             const res = await axios.post(
-                "http://127.0.0.1:8000/api/profile/share/generate/",
+                `${apiBase}/api/profile/share/generate/`,
                 { days: expiry },
                 {
                     headers: {

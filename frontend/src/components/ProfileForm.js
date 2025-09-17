@@ -27,7 +27,7 @@ function ProfileForm() {
         const token = localStorage.getItem("access_token");
         if (!token) return;
 
-        axios.get("${apiBase}/api1/profile/", {
+        axios.get(`${apiBase}/api1/profile/`, {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {
@@ -92,7 +92,7 @@ function ProfileForm() {
         try {
             if (profile.id) {
                 await axios.patch(
-                    `http://127.0.0.1:8000/api1/profile/${profile.id}/`,
+                    `${apiBase}/api1/profile/${profile.id}/`,
                     formData,
                     {
                         headers: {
@@ -103,7 +103,7 @@ function ProfileForm() {
                 );
             } else {
                 const res = await axios.post(
-                    "http://127.0.0.1:8000/api1/profile/",
+                    `${apiBase}/api1/profile/`,
                     formData,
                     {
                         headers: {
