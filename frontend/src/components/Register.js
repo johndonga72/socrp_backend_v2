@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-const apiBase = process.env.REACT_APP_API_URL;
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css"; // ✅ CSS Modules import
-
+const apiBase = process.env.REACT_APP_API_URL;
 function Register() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
