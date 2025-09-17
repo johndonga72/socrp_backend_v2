@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+const apiBase = process.env.REACT_APP_API_URL;
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css"; // ✅ CSS Modules import
@@ -81,7 +82,7 @@ function Register() {
         if (resume) data.append("resume", resume);
 
         try {
-            await axios.post("http://127.0.0.1:8000/api/register/", data, {
+            await axios.post("${apiBase}/api/register/", data, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             setSuccessMsg("Registration successful! Please check your email to verify your account.");

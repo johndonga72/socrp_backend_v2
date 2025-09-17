@@ -152,7 +152,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')# for your CSS/JS
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React dev server
+    "http://localhost:3000",
+    "https://socrp-backend-v2-2.onrender.com", # React dev server
 ]
 FRONTEND_URL = "http://localhost:3000"
 
