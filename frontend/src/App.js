@@ -15,7 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/verify/:uid" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/Register" element={<Register />} />
+        <Route path="/register" element={<Register />} />  {/* lowercase */}
         <Route path="/profile" element={<ProfileForm />} />
         <Route path="/profile/preview" element={<ProfilePreview />} />
         <Route path="/admin/login" element={<Admin />} />

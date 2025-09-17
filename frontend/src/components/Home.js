@@ -90,7 +90,7 @@ const Home = () => {
                 <h2 style={{ margin: 0 }}>Pharma Research Company</h2>
                 <nav style={{ display: "flex", gap: "20px" }}>
                     <Link to="/" style={{ color: "white", textDecoration: "none" }}>Home</Link>
-                    <Link to="/Register" style={{ color: "white", textDecoration: "none" }}>Register</Link>
+                    <Link to="/register" style={{ color: "white", textDecoration: "none" }}>Register</Link>
                     <Link to="/login" style={{ color: "white", textDecoration: "none" }}>Login</Link>
                     <a href="#courses" style={{ color: "white", textDecoration: "none" }}>Courses</a>
                     <a href="#articles" style={{ color: "white", textDecoration: "none" }}>Articles</a>
@@ -284,7 +284,7 @@ const Home = () => {
                         <h3>Quick Links</h3>
                         <ul style={{ listStyle: "none", padding: 0 }}>
                             <li><Link to="/" style={{ color: "white", textDecoration: "none" }}>Home</Link></li>
-                            <li><Link to="/Register" style={{ color: "white", textDecoration: "none" }}>Register</Link></li>
+                            <li><Link to="/register" style={{ color: "white", textDecoration: "none" }}>Register</Link></li>
                             <li><Link to="/login" style={{ color: "white", textDecoration: "none" }}>Login</Link></li>
                             <li><Link to="/admin/login" style={{ color: "white", textDecoration: "none" }}>Admin Login</Link></li>
                         </ul>
