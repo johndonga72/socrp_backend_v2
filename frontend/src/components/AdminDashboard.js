@@ -76,7 +76,7 @@ export default function AdminDashboard() {
         }
     };
 
-    // ✅ fixed toggleBlock
+    // ✅ fixed toggleBlock (calls unblockUser/blockUser) and refreshes stats
     const toggleBlock = async (id, isBlocked) => {
         try {
             const res = isBlocked ? await unblockUser(id) : await blockUser(id);
@@ -95,19 +95,36 @@ export default function AdminDashboard() {
                     is_blocked: !selectedUser.is_blocked,
                 });
             }
+
+            // refresh dashboard cards immediately
+            try {
+                const dashboardRes = await fetchDashboard();
+                setStats(dashboardRes.data);
+            } catch (err) {
+                console.error("Failed to refresh stats after block toggle:", err);
+            }
+
         } catch (err) {
             console.error("Failed to block/unblock user:", err);
             alert("Action failed.");
         }
     };
 
-    // ✅ fixed edit to use PATCH
+    // ✅ fixed edit to use PATCH (editUser should be implemented as PATCH in adminApi.js)
+    // After edit we refresh users and dashboard stats
     const handleEditSubmit = async (id, data) => {
         try {
             await editUser(id, data);
             alert("User updated successfully!");
             const usersRes = await fetchUsers();
             setUsers(usersRes.data);
+            // refresh dashboard cards
+            try {
+                const dashboardRes = await fetchDashboard();
+                setStats(dashboardRes.data);
+            } catch (err) {
+                console.error("Failed to refresh stats after edit:", err);
+            }
             setActivePage("dashboard");
         } catch (err) {
             console.error("Failed to edit user:", err);
@@ -215,7 +232,13 @@ export default function AdminDashboard() {
                                             <td>{u.membership_id || "-"}</td>
                                             <td>{u.full_name || "-"}</td>
                                             <td>{u.email || "-"}</td>
-                                            <td>{u.is_blocked ? "Blocked" : "Active"}</td>
+                                            <td>
+                                                {u.is_blocked
+                                                    ? "Blocked"
+                                                    : !u.is_active
+                                                        ? "Pending"
+                                                        : "Active"}
+                                            </td>
                                             <td>
                                                 <button onClick={() => viewUser(u.id)}>View</button>
                                                 <button onClick={() => editUserPage(u.id)}>Edit</button>
@@ -237,7 +260,7 @@ export default function AdminDashboard() {
                             <p><b>Name:</b> {selectedUser.full_name || "-"}</p>
                             <p><b>Email:</b> {selectedUser.email || "-"}</p>
                             <p><b>Phone:</b> {selectedUser.phone || "-"}</p>
-                            <p><b>Status:</b> {selectedUser.is_blocked ? "Blocked" : "Active"}</p>
+                            <p><b>Status:</b> {selectedUser.is_blocked ? "Blocked" : (!selectedUser.is_active ? "Pending" : "Active")}</p>
                             <p><b>DOB:</b> {selectedUser.profile?.dob || "-"}</p>
                             <p><b>Gender:</b> {selectedUser.profile?.gender || "-"}</p>
                             <p><b>Contact:</b> {selectedUser.profile?.contact || "-"}</p>
