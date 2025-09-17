@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminLogin.module.css";
+const apiBase = process.env.REACT_APP_API_URL;
 
 function AdminLogin() {
     const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ function AdminLogin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/admin/login/", {
+            const res = await axios.post("${apiBase}/api/admin/login/", {
                 email,
                 password,
             });

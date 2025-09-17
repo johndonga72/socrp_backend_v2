@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./Profile.module.css";
+const apiBase = process.env.REACT_APP_API_URL;
 
 function ProfileForm() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ function ProfileForm() {
         const token = localStorage.getItem("access_token");
         if (!token) return;
 
-        axios.get("http://127.0.0.1:8000/api1/profile/", {
+        axios.get("${apiBase}/api1/profile/", {
             headers: { Authorization: `Bearer ${token}` }
         })
             .then(res => {

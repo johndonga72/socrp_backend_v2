@@ -8,6 +8,7 @@ import {
 } from "./adminApi";
 
 import styles from "./AdminDashboard.module.css";
+const apiBase = process.env.REACT_APP_API_URL;
 
 export default function AdminDashboard() {
     const [activePage, setActivePage] = useState("dashboard");

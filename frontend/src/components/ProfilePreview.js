@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import jsPDF from "jspdf"; // ✅ for PDF export
 import styles from "./ProfilePreview.module.css"; // CSS module
-
+const apiBase = process.env.REACT_APP_API_URL;
 const ProfilePreview = () => {
     const [profile, setProfile] = useState(null);
     const [shareUrl, setShareUrl] = useState("");
@@ -19,7 +19,7 @@ const ProfilePreview = () => {
             }
 
             try {
-                const res = await axios.get("http://127.0.0.1:8000/api1/profile/", {
+                const res = await axios.get("${apiBase}/api1/profile/", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (res.data.length > 0) setProfile(res.data[0]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+const apiBase = process.env.REACT_APP_API_URL;
 
 function SharedProfilePage() {
     const { token } = useParams();
@@ -8,7 +9,7 @@ function SharedProfilePage() {
     const [expired, setExpired] = useState(false);
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/profile/share/${token}/`)
+        axios.get(`${apiBase}/api/profile/share/${token}/`)
             .then(res => setProfile(res.data))
             .catch(() => setExpired(true));
     }, [token]);
@@ -21,7 +22,7 @@ function SharedProfilePage() {
         if (!filePath) return null;
         return filePath.startsWith("http")
             ? filePath
-            : `http://127.0.0.1:8000${filePath}`;
+            : `${apiBase}${filePath}`;
     };
 
     return (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { FaCheckCircle, FaTimesCircle, FaEnvelopeOpenText } from "react-icons/fa";
-
+const apiBase = process.env.REACT_APP_API_URL;
 function VerifyEmail() {
     const params = useParams(); // grabs UID from URL
     const [msg, setMsg] = useState("");
@@ -12,7 +12,7 @@ function VerifyEmail() {
     useEffect(() => {
         const uid = params.uid;
         axios
-            .get(`http://127.0.0.1:8000/api/verify/${uid}/`)
+            .get(`${apiBase}/api/verify/${uid}/`)
             .then((res) => {
                 setMsg(res.data.msg);
                 setStatus("success");

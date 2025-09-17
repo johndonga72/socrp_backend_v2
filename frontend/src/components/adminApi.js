@@ -1,9 +1,10 @@
 // src/api/adminApi.js
 import axios from "axios";
+const apiBase = process.env.REACT_APP_API_URL;
 
 // 1️⃣ Create Axios instance
 const API = axios.create({
-    baseURL: "http://127.0.0.1:8000/api", // Django backend URL (no trailing slash)
+    baseURL: "${apiBase}/api", // Django backend URL (no trailing slash)
 });
 
 // 2️⃣ Add JWT token automatically if present in localStorage
