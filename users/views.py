@@ -41,7 +41,7 @@ class RegisterUser(APIView):
             user.save()
             # Send verification email
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            verification_link = f"http://localhost:3000/verify/{uid}/"
+            verification_link = f"https://socrp-frontend-v2-2.onrender.com/verify/{uid}/"
             send_mail(
                 subject="Verify your account",
                 message=f"Click the link to verify your account: {verification_link}",
@@ -120,7 +120,7 @@ class GenerateShareLink(APIView):
         expiry = timezone.now() + timedelta(days=days)
         link = ProfileShareLink.objects.create(user=request.user, expiry_date=expiry)
 
-        share_url = f"{settings.FRONTEND_URL}/shared-profile/{link.token}"
+        share_url = f"https://socrp-frontend-v2-2.onrender.com/shared-profile/{link.token}"
         return Response({"share_url": share_url, "expiry_date": expiry}, status=status.HTTP_201_CREATED)
 class SharedProfileView(APIView):
     permission_classes = [permissions.AllowAny]  # Anyone with link can view

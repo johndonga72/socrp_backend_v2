@@ -6,11 +6,14 @@ import {
     blockUnblockUser,
     editUser
 } from "./adminApi";
+import { useNavigate } from "react-router-dom";
+
 
 import styles from "./AdminDashboard.module.css";
 
 
 export default function AdminDashboard() {
+    const navigate = useNavigate();
     const [activePage, setActivePage] = useState("dashboard");
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
@@ -117,7 +120,7 @@ export default function AdminDashboard() {
 
     const logout = () => {
         localStorage.removeItem("admin_access_token");
-        window.location.href = "/admin/login";
+        navigate("/admin/login");
     };
 
     if (loading) return <p>Loading...</p>;
