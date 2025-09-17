@@ -20,8 +20,9 @@ API.interceptors.request.use((req) => {
 export const fetchDashboard = () => API.get("/admin/stats/");
 export const fetchUsers = () => API.get("/admin/users/");
 export const fetchUserDetail = (id) => API.get(`/admin/users/${id}/`);
-export const blockUnblockUser = (id) => API.post(`/admin/users/${id}/block/`);
-export const editUser = (id, data) => API.put(`/admin/users/${id}/edit/`, data);
+export const blockUser = (id) => API.post(`/admin/users/${id}/block/`);
+export const unblockUser = (id) => API.post(`/admin/users/${id}/unblock/`);
+export const editUser = (id, data) => API.patch(`/admin/users/${id}/`, data);
 
 // 4️⃣ Optional: Catch errors centrally (like 403)
 API.interceptors.response.use(

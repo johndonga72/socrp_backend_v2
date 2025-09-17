@@ -3,14 +3,13 @@ import {
     fetchDashboard,
     fetchUsers,
     fetchUserDetail,
-    blockUnblockUser,
-    editUser
+    blockUser,       // ✅ fixed
+    unblockUser,     // ✅ fixed
+    editUser         // ✅ fixed
 } from "./adminApi";
 import { useNavigate } from "react-router-dom";
 
-
 import styles from "./AdminDashboard.module.css";
-
 
 export default function AdminDashboard() {
     const navigate = useNavigate();
@@ -21,9 +20,9 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [filterStatus, setFilterStatus] = useState("all"); // active, blocked, all
+    const [filterStatus, setFilterStatus] = useState("all");
 
-    // Load dashboard and users
+    // Load dashboard + users
     useEffect(() => {
         const loadData = async () => {
             setLoading(true);
@@ -43,13 +42,14 @@ export default function AdminDashboard() {
         loadData();
     }, []);
 
-    // Filtered users
+    // Filtering
     const filteredUsers = users.filter((u) => {
         const fullName = u.full_name || "";
         const email = u.email || "";
         const matchesSearch =
             fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.toLowerCase().includes(searchQuery.toLowerCase());
+
         const matchesStatus =
             filterStatus === "all"
                 ? true
@@ -64,6 +64,7 @@ export default function AdminDashboard() {
         return matchesSearch && matchesStatus;
     });
 
+    // View user
     const viewUser = async (id) => {
         try {
             const res = await fetchUserDetail(id);
@@ -75,12 +76,13 @@ export default function AdminDashboard() {
         }
     };
 
-    const toggleBlock = async (id) => {
+    // ✅ fixed toggleBlock
+    const toggleBlock = async (id, isBlocked) => {
         try {
-            const res = await blockUnblockUser(id);
+            const res = isBlocked ? await unblockUser(id) : await blockUser(id);
             alert(res.data.message);
 
-            // Update local users state
+            // Update state
             setUsers(
                 users.map((u) =>
                     u.id === id ? { ...u, is_blocked: !u.is_blocked } : u
@@ -99,6 +101,7 @@ export default function AdminDashboard() {
         }
     };
 
+    // ✅ fixed edit to use PATCH
     const handleEditSubmit = async (id, data) => {
         try {
             await editUser(id, data);
@@ -153,7 +156,7 @@ export default function AdminDashboard() {
                     </ul>
                 </aside>
 
-                {/* Main Content */}
+                {/* Main */}
                 <main className={styles.adminMain}>
                     {/* DASHBOARD */}
                     {activePage === "dashboard" && stats && (
@@ -190,10 +193,9 @@ export default function AdminDashboard() {
                                     onChange={(e) => setFilterStatus(e.target.value)}
                                 >
                                     <option value="all">All</option>
-                                    <option value="active">pending</option>
+                                    <option value="active">Active</option>
                                     <option value="blocked">Blocked</option>
-                                    <option value="pending">active</option>
-
+                                    <option value="pending">Pending</option>
                                 </select>
                             </div>
 
@@ -217,7 +219,7 @@ export default function AdminDashboard() {
                                             <td>
                                                 <button onClick={() => viewUser(u.id)}>View</button>
                                                 <button onClick={() => editUserPage(u.id)}>Edit</button>
-                                                <button onClick={() => toggleBlock(u.id)}>
+                                                <button onClick={() => toggleBlock(u.id, u.is_blocked)}>
                                                     {u.is_blocked ? "Unblock" : "Block"}
                                                 </button>
                                             </td>
@@ -255,7 +257,7 @@ export default function AdminDashboard() {
                                 <p key={idx}>{exp.company_name} - {exp.designation} ({exp.start_date} to {exp.end_date})</p>
                             ))}
 
-                            <button onClick={() => toggleBlock(selectedUser.id)}>
+                            <button onClick={() => toggleBlock(selectedUser.id, selectedUser.is_blocked)}>
                                 {selectedUser.is_blocked ? "Unblock" : "Block"}
                             </button>
                             <button onClick={() => editUserPage(selectedUser.id)}>Edit</button>
