@@ -56,6 +56,7 @@ class RegisterUser(APIView):
 
 @permission_classes([AllowAny])
 class VerifyEmail(APIView):
+    
     def get(self, request, uid):
         try:
             uid = urlsafe_base64_decode(uid).decode()
