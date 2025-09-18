@@ -130,19 +130,22 @@ class AdminUserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        if "profile_photo" in validated_data:
-            instance.profile_photo = validated_data.pop("profile_photo")
-        if "resume" in validated_data:
-            instance.resume = validated_data.pop("resume")
+        
+       
             
         fields = [
             "id","membership_id", "dob", "gender", "contact", "address",
             "profile_photo", "resume", "skills", "languages",
             "educations", "experiences"
         ]
-
+        read_only_fields = []
     def update(self, instance, validated_data):
         # --- Update profile fields ---
+         if "profile_photo" in validated_data:
+            instance.profile_photo = validated_data.pop("profile_photo")
+        if "resume" in validated_data:
+            instance.resume = validated_data.pop("resume")
+            
         for field in ["dob", "gender", "contact", "address", "profile_photo", "resume", "skills", "languages"]:
             setattr(instance, field, validated_data.get(field, getattr(instance, field)))
         instance.save()
