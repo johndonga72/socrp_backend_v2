@@ -110,11 +110,10 @@ export default function AdminDashboard() {
         }
     };
 
-    // ✅ fixed edit to use PATCH (editUser should be implemented as PATCH in adminApi.js)
-    // After edit we refresh users and dashboard stats
-    const handleEditSubmit = async (id, data) => {
+    // ✅ fixed edit to send nested JSON for profile + files separately
+    const handleEditSubmit = async (id, formData) => {
         try {
-            await editUser(id, data);
+            await editUser(id, formData);
             alert("User updated successfully!");
             const usersRes = await fetchUsers();
             setUsers(usersRes.data);
@@ -295,21 +294,37 @@ export default function AdminDashboard() {
                             <form
                                 onSubmit={(e) => {
                                     e.preventDefault();
-                                    const data = {
-                                        full_name: e.target.full_name.value,
-                                        email: e.target.email.value,
-                                        phone: e.target.phone.value,
-                                        is_blocked: e.target.is_blocked.checked,
-                                        profile: {
-                                            dob: e.target.dob.value,
-                                            gender: e.target.gender.value,
-                                            contact: e.target.contact.value,
-                                            address: e.target.address.value,
-                                            skills: e.target.skills.value,
-                                            languages: e.target.languages.value,
-                                        }
+
+                                    const formData = new FormData();
+
+                                    // --- Top-level user fields ---
+                                    formData.append("full_name", e.target.full_name.value);
+                                    formData.append("email", e.target.email.value);
+                                    formData.append("phone", e.target.phone.value);
+                                    formData.append("is_blocked", e.target.is_blocked.checked);
+
+                                    // --- Profile object ---
+                                    const profileObj = {
+                                        dob: e.target.dob.value,
+                                        gender: e.target.gender.value,
+                                        contact: e.target.contact.value,
+                                        address: e.target.address.value,
+                                        skills: e.target.skills.value,
+                                        languages: e.target.languages.value,
                                     };
-                                    handleEditSubmit(selectedUser.id, data);
+
+                                    // attach JSON profile
+                                    formData.append("profile", JSON.stringify(profileObj));
+
+                                    // --- File fields (profile_photo & resume) ---
+                                    if (e.target.profile_photo.files[0]) {
+                                        formData.append("profile.profile_photo", e.target.profile_photo.files[0]);
+                                    }
+                                    if (e.target.resume.files[0]) {
+                                        formData.append("profile.resume", e.target.resume.files[0]);
+                                    }
+
+                                    handleEditSubmit(selectedUser.id, formData);
                                 }}
                             >
                                 <label>Name:</label>
@@ -347,6 +362,12 @@ export default function AdminDashboard() {
                                 <label>Languages:</label>
                                 <input type="text" name="languages" defaultValue={selectedUser.profile?.languages || ""} />
 
+                                <label>Profile Photo:</label>
+                                <input type="file" name="profile_photo" accept="image/*" />
+
+                                <label>Resume:</label>
+                                <input type="file" name="resume" accept=".pdf,.doc,.docx" />
+
                                 <button type="submit">Save</button>
                                 <button
                                     type="button"
@@ -367,6 +388,5 @@ export default function AdminDashboard() {
         </div>
     );
 }
-
 
 

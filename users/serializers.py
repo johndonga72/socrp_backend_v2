@@ -130,35 +130,48 @@ class AdminUserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
+        if "profile_photo" in validated_data:
+            instance.profile_photo = validated_data.pop("profile_photo")
+        if "resume" in validated_data:
+            instance.resume = validated_data.pop("resume")
+            
         fields = [
             "id","membership_id", "dob", "gender", "contact", "address",
             "profile_photo", "resume", "skills", "languages",
             "educations", "experiences"
         ]
-        read_only_fields = []
 
     def update(self, instance, validated_data):
-        # Update profile fields
+        # --- Update profile fields ---
         for field in ["dob", "gender", "contact", "address", "profile_photo", "resume", "skills", "languages"]:
             setattr(instance, field, validated_data.get(field, getattr(instance, field)))
         instance.save()
 
-        # Update nested educations
-        for edu in validated_data.get("educations", []):
-            Education.objects.update_or_create(
-                user_profile=instance,
-                degree=edu.get("degree"),
-                defaults=edu
-            )
+        # --- Update educations ---
+        educations_data = validated_data.get("educations", [])
+        for edu in educations_data:
+            edu_id = edu.get("id")
+            if edu_id:
+                edu_instance = instance.educations.filter(id=edu_id).first()
+                if edu_instance:
+                    edu_serializer = AdminEducationSerializer(edu_instance, data=edu, partial=True)
+                    edu_serializer.is_valid(raise_exception=True)
+                    edu_serializer.save()
+            else:
+                Education.objects.create(user_profile=instance, **edu)
 
-        # Update nested experiences
-        for exp in validated_data.get("experiences", []):
-            WorkExperience.objects.update_or_create(
-                user_profile=instance,
-                company_name=exp.get("company_name"),
-                designation=exp.get("designation"),
-                defaults=exp
-            )
+        # --- Update experiences ---
+        experiences_data = validated_data.get("experiences", [])
+        for exp in experiences_data:
+            exp_id = exp.get("id")
+            if exp_id:
+                exp_instance = instance.experiences.filter(id=exp_id).first()
+                if exp_instance:
+                    exp_serializer = AdminWorkExperienceSerializer(exp_instance, data=exp, partial=True)
+                    exp_serializer.is_valid(raise_exception=True)
+                    exp_serializer.save()
+            else:
+                WorkExperience.objects.create(user_profile=instance, **exp)
 
         return instance
 
@@ -167,15 +180,15 @@ class AdminUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["id", "full_name", "email", "phone", "is_blocked", "profile"]  # replace 'status' with 'is_blocked'
+        fields = ["id", "full_name", "email", "phone", "is_blocked", "profile"]
 
     def update(self, instance, validated_data):
-        # Update user fields
-        for field in ["full_name", "email", "phone", "is_blocked"]:  # replaced 'status'
+        # --- Update CustomUser fields ---
+        for field in ["full_name", "email", "phone", "is_blocked"]:
             setattr(instance, field, validated_data.get(field, getattr(instance, field)))
         instance.save()
 
-        # Handle profile
+        # --- Handle profile update ---
         profile_data = validated_data.get("profile")
         if profile_data:
             profile_instance = getattr(instance, "profile", None)
@@ -184,7 +197,7 @@ class AdminUserSerializer(serializers.ModelSerializer):
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
             else:
-                UserProfile.objects.create(user=instance, **profile_data)
+                profile_instance = UserProfile.objects.create(user=instance, **profile_data)
 
         return instance
 class AdminUserStatusSerializer(serializers.ModelSerializer):
