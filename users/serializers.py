@@ -141,7 +141,7 @@ class AdminUserProfileSerializer(serializers.ModelSerializer):
         read_only_fields = []
     def update(self, instance, validated_data):
         # --- Update profile fields ---
-         if "profile_photo" in validated_data:
+        if "profile_photo" in validated_data:
             instance.profile_photo = validated_data.pop("profile_photo")
         if "resume" in validated_data:
             instance.resume = validated_data.pop("resume")
