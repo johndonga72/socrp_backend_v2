@@ -24,9 +24,9 @@ __pycache__/
 *.pyc
 db.sqlite3
 # Django migrations
-*/migrations/*.pyc
-*/migrations/*.py
-!*/migrations/__init__.py
+venv/
+.env
+__pycache__/
 # Node/React
 node_modules/
 build/
